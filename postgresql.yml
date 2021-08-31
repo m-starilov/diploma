@@ -1,0 +1,44 @@
+version: '2.1'
+services:
+  database:
+    container_name: database
+    image: postgres:12-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=pass
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready"]
+        timeout: 5s
+        retries: 5
+  app:
+    container_name: aqa-shop
+    image: openjdk:8-slim
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./artifacts:/usr/src/myapp
+    environment:
+      - spring_credit-gate_url=http://nodejs:9999/credit
+      - spring_payment-gate_url=http://nodejs:9999/payment
+      - spring_datasource_url=jdbc:postgresql://database:5432/app
+      - spring_datasource_username=app
+      - spring_datasource_password=pass
+    ports:
+      - "8080:8080"
+    working_dir: /usr/src/myapp
+    command: java -jar aqa-shop.jar
+
+  nodejs:
+    container_name: gate-simulator
+    image: node:current-alpine3.14
+    volumes:
+      - ./gate-simulator:/usr/src/node
+      - /usr/src/node/node_modules
+    ports:
+      - "9999:9999"
+    working_dir: /usr/src/node
+    command: npm start

@@ -1,0 +1,47 @@
+version: '2.1'
+services:
+  database:
+    container_name: database
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=app
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=pass
+    healthcheck:
+        test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+        timeout: 5s
+        retries: 5
+
+  app:
+    container_name: aqa-shop
+    image: openjdk:8-slim
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./artifacts:/usr/src/myapp
+    environment:
+      - spring_credit-gate_url=http://nodejs:9999/credit
+      - spring_payment-gate_url=http://nodejs:9999/payment
+      - spring_datasource_url=jdbc:mysql://database:3306/app
+      - spring_datasource_username=app
+      - spring_datasource_password=pass
+    ports:
+      - "8080:8080"
+    working_dir: /usr/src/myapp
+    command: java -jar aqa-shop.jar
+
+  nodejs:
+    container_name: gate-simulator
+    image: node:current-alpine3.14
+    volumes:
+      - ./gate-simulator:/usr/src/node
+      - /usr/src/node/node_modules
+    ports:
+      - "9999:9999"
+    working_dir: /usr/src/node
+    command: npm start
