@@ -1,5 +1,6 @@
 package ru.netology.web.test;
 
+import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.netology.web.data.DataHelper;
@@ -12,12 +13,19 @@ public class MainPageFieldsTest {
 
     @BeforeEach
     void openMainPage() {
+        Configuration.startMaximized = true;
         mainPage = open("http://localhost:8080", MainPage.class);
     }
 
     @Test
     void inputInvalidCardNumberForCardPayment() {
         mainPage.paymentByCard(DataHelper.getInvalidCardNumberInCardInfo());
+        mainPage.cardNumberWrongFormatMessagesShouldBeVisible();
+    }
+
+    @Test
+    void inputInvalidShortCardNumberForCardPayment() {
+        mainPage.paymentByCard(DataHelper.getInvalidShortCardNumberInCardInfo());
         mainPage.cardNumberWrongFormatMessagesShouldBeVisible();
     }
 
@@ -58,58 +66,29 @@ public class MainPageFieldsTest {
     }
 
     @Test
-    void inputAndDeleteCardInfoForCardPayment() {
-        mainPage.inputAndDeleteCardInfo(DataHelper.getInvalidCardInfo());
+    void inputEmptyDataForCardPayment() {
+        mainPage.paymentByCard(new DataHelper.CardInfo());
         mainPage.fieldsShouldBeEmpty();
-    }
-
-    @Test
-    void inputInvalidCardNumberForCreditPayment() {
-        mainPage.paymentByCredit(DataHelper.getInvalidCardNumberInCardInfo());
         mainPage.cardNumberWrongFormatMessagesShouldBeVisible();
-    }
-
-    @Test
-    void inputInvalidMonth1DigitForCreditPayment() {
-        mainPage.paymentByCredit(DataHelper.getInvalidMonth1DigitInCardInfo());
         mainPage.monthWrongFormatMessagesShouldBeVisible();
-    }
-
-    @Test
-    void inputInvalidMonth2DigitsForCreditPayment() {
-        mainPage.paymentByCredit(DataHelper.getInvalidMonth2DigitsInCardInfo());
-        mainPage.monthWrongDateErrorMessagesShouldBeVisible();
-    }
-
-    @Test
-    void inputInvalidYear1DigitForCreditPayment() {
-        mainPage.paymentByCredit(DataHelper.getInvalidYear1DigitInCardInfo());
         mainPage.yearWrongFormatMessagesShouldBeVisible();
-    }
-
-    @Test
-    void inputInvalidYear2DigitsForCreditPayment() {
-        mainPage.paymentByCredit(DataHelper.getInvalidYear2DigitsInCardInfo());
-        mainPage.yearExpiredMessagesShouldBeVisible();
-    }
-
-    @Test
-    void inputInvalidHolderForCreditPayment() {
-        mainPage.paymentByCredit(DataHelper.getInvalidHolderInCardInfo());
-        mainPage.holderWrongFormatMessagesShouldBeVisible();
-    }
-
-    @Test
-    void inputInvalidCvcForCreditPayment() {
-        mainPage.paymentByCredit(DataHelper.getInvalidCVCInCardInfo());
+        mainPage.holderRequiredFieldMessagesShouldBeVisible();
         mainPage.cvcWrongFormatMessagesShouldBeVisible();
     }
 
     @Test
-    void inputAndDeleteCardInfoForCreditPayment() {
-        mainPage.inputAndDeleteCardInfo(DataHelper.getInvalidCardInfo());
+    void inputInvalidCardInfoForCardPayment() {
+        mainPage.paymentByCard(DataHelper.getInvalidCardInfo());
         mainPage.cardNumberWrongFormatMessagesShouldBeVisible();
         mainPage.monthWrongDateErrorMessagesShouldBeVisible();
+        mainPage.yearWrongFormatMessagesShouldBeVisible();
+        mainPage.holderWrongFormatMessagesShouldBeVisible();
+        mainPage.cvcWrongFormatMessagesShouldBeVisible();
     }
 
+    @Test
+    void inputAndDeleteCardInfoForCardPayment() {
+        mainPage.inputAndDeleteCardInfo(DataHelper.getInvalidCardInfo());
+        mainPage.fieldsShouldBeEmpty();
+    }
 }

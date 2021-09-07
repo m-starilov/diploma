@@ -1,5 +1,6 @@
 package ru.netology.web.test;
 
+import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.netology.web.data.DBHelper;
@@ -13,90 +14,36 @@ public class MainPageTest {
     private static MainPage mainPage;
 
     @BeforeEach
-    void openMainPage(){
+    void openMainPage() {
+        Configuration.startMaximized = true;
         mainPage = open("http://localhost:8080", MainPage.class);
     }
 
     @Test
-    void inputEmptyDataForCardPayment(){
-        mainPage.paymentByCard(new DataHelper.CardInfo());
-        mainPage.fieldsShouldBeEmpty();
-        mainPage.cardNumberWrongFormatMessagesShouldBeVisible();
-        mainPage.monthWrongFormatMessagesShouldBeVisible();
-        mainPage.yearWrongFormatMessagesShouldBeVisible();
-        mainPage.holderRequiredFieldMessagesShouldBeVisible();
-        mainPage.cvcWrongFormatMessagesShouldBeVisible();
-    }
-
-    @Test
-    void inputInvalidCardInfoForCardPayment(){
-        mainPage.paymentByCard(DataHelper.getInvalidCardInfo());
-        mainPage.cardNumberWrongFormatMessagesShouldBeVisible();
-        mainPage.monthWrongDateErrorMessagesShouldBeVisible();
-        mainPage.yearWrongFormatMessagesShouldBeVisible();
-        mainPage.holderWrongFormatMessagesShouldBeVisible();
-        mainPage.cvcWrongFormatMessagesShouldBeVisible();
-    }
-
-    @Test
-    void inputValidDataForCardPayment(){
-        mainPage.paymentByCard(DataHelper.getValidCardInfo());
-        mainPage.declinedMessageShouldBeVisible();
-    }
-
-    @Test
-    void inputApprovedValidDataForCardPayment(){
-        mainPage.paymentByCard(DataHelper.getApprovedValidCardInfo());
+    void inputApprovedDataForCardPayment() {
+        mainPage.paymentByCard(DataHelper.getApprovedCardInfo());
         mainPage.approvedMessageShouldBeVisible();
         assertEquals("APPROVED", DBHelper.getPaymentStatus());
     }
 
     @Test
-    void inputDeclinedValidDataForCardPayment(){
-        mainPage.paymentByCard(DataHelper.getDeclinedValidCardInfo());
+    void inputDeclinedDataForCardPayment() {
+        mainPage.paymentByCard(DataHelper.getDeclinedCardInfo());
         mainPage.declinedMessageShouldBeVisible();
         assertEquals("DECLINED", DBHelper.getPaymentStatus());
     }
 
     @Test
-    void inputEmptyDataForCreditPayment(){
-        mainPage.paymentByCredit(new DataHelper.CardInfo());
-        mainPage.fieldsShouldBeEmpty();
-        mainPage.cardNumberWrongFormatMessagesShouldBeVisible();
-        mainPage.monthWrongFormatMessagesShouldBeVisible();
-        mainPage.yearWrongFormatMessagesShouldBeVisible();
-        mainPage.holderRequiredFieldMessagesShouldBeVisible();
-        mainPage.cvcWrongFormatMessagesShouldBeVisible();
-    }
-
-    @Test
-    void inputInvalidCardInfoForCreditPayment(){
-        mainPage.paymentByCredit(DataHelper.getInvalidCardInfo());
-        mainPage.cardNumberWrongFormatMessagesShouldBeVisible();
-        mainPage.monthWrongDateErrorMessagesShouldBeVisible();
-        mainPage.yearWrongFormatMessagesShouldBeVisible();
-        mainPage.holderWrongFormatMessagesShouldBeVisible();
-        mainPage.cvcWrongFormatMessagesShouldBeVisible();
-    }
-
-    @Test
-    void inputValidDataForCreditPayment(){
-        mainPage.paymentByCredit(DataHelper.getValidCardInfo());
-        mainPage.declinedMessageShouldBeVisible();
-    }
-
-    @Test
-    void inputApprovedValidDataForCreditPayment(){
-        mainPage.paymentByCredit(DataHelper.getApprovedValidCardInfo());
+    void inputApprovedDataForCreditPayment() {
+        mainPage.paymentByCredit(DataHelper.getApprovedCardInfo());
         mainPage.approvedMessageShouldBeVisible();
         assertEquals("APPROVED", DBHelper.getCreditStatus());
     }
 
     @Test
-    void inputDeclinedValidDataForCreditPayment(){
-        mainPage.paymentByCredit(DataHelper.getDeclinedValidCardInfo());
+    void inputDeclinedDataForCreditPayment() {
+        mainPage.paymentByCredit(DataHelper.getDeclinedCardInfo());
         mainPage.declinedMessageShouldBeVisible();
         assertEquals("DECLINED", DBHelper.getCreditStatus());
     }
 }
-

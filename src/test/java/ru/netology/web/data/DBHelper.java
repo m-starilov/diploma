@@ -5,28 +5,27 @@ import lombok.val;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DBHelper {
-    private DBHelper() {}
+    private DBHelper() {
+    }
 
     @SneakyThrows
     public static String getOrderStatus(String orderQuery) {
-        Connection conn;
         val paymentIdQuery = "SELECT payment_id FROM order_entity ORDER BY created DESC LIMIT 1;";
         val runner = new QueryRunner();
 
-        try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass");
+        try (val mysqlConn = DriverManager
+                .getConnection("jdbc:mysql://localhost:3306/app", "app", "pass")) {
+            val orderId = runner.query(mysqlConn, paymentIdQuery, new ScalarHandler<String>());
+            return runner.query(mysqlConn, orderQuery, new ScalarHandler<>(), orderId);
+        } catch (Exception e) {
+            val postgresqlConn = DriverManager
+                    .getConnection("jdbc:postgresql://localhost:5432/app", "app", "pass");
+            val orderId = runner.query(postgresqlConn, paymentIdQuery, new ScalarHandler<String>());
+            return runner.query(postgresqlConn, orderQuery, new ScalarHandler<>(), orderId);
         }
-        catch (Exception e) {
-            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/app", "app", "pass");
-        }
-        val orderId = runner.query(conn, paymentIdQuery, new ScalarHandler<String>());
-        val orderStatus = runner.query(conn, orderQuery, new ScalarHandler<String>(), orderId);
-        if (conn != null) conn.close();
-        return orderStatus;
     }
 
     public static String getPaymentStatus() {
