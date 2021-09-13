@@ -10,7 +10,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class DataHelper {
-    private DataHelper() {}
+    private DataHelper() {
+    }
 
     public static Faker faker = new Faker();
     public static DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MM");
@@ -39,7 +40,7 @@ public class DataHelper {
         return declinedCardNumbers[index];
     }
 
-    public static CardInfo getValidCardInfo(){
+    public static CardInfo getValidCardInfo() {
         val validCardInfo = new CardInfo();
         validCardInfo.cardNumber = "4444 4444 4444 0000";
         validCardInfo.month = LocalDate.now().plusMonths(faker.number().numberBetween(1, 12)).format(monthFormatter);
@@ -49,10 +50,10 @@ public class DataHelper {
         return validCardInfo;
     }
 
-    public static CardInfo getInvalidCardInfo(){
+    public static CardInfo getInvalidCardInfo() {
         val invalidCardInfo = new CardInfo();
         invalidCardInfo.cardNumber = "5555 5555 5555 444";
-        invalidCardInfo.month = String.valueOf(faker.number().numberBetween(13,100));
+        invalidCardInfo.month = String.valueOf(faker.number().numberBetween(13, 100));
         invalidCardInfo.year = LocalDate.now().minusYears(faker.number().numberBetween(1, 10)).format(yearFormatter);
         invalidCardInfo.holder = faker.internet()
                 .password(8, 20, true, true, true);
@@ -60,63 +61,63 @@ public class DataHelper {
         return invalidCardInfo;
     }
 
-    public static CardInfo getApprovedCardInfo(){
+    public static CardInfo getApprovedCardInfo() {
         val approvedValidCardInfo = getValidCardInfo();
         approvedValidCardInfo.cardNumber = getApprovedCardNumber();
         return approvedValidCardInfo;
     }
 
-    public static CardInfo getDeclinedCardInfo(){
+    public static CardInfo getDeclinedCardInfo() {
         val declinedValidCardInfo = getValidCardInfo();
         declinedValidCardInfo.cardNumber = getDeclinedCardNumber();
         return declinedValidCardInfo;
     }
 
-    public static CardInfo getInvalidCardNumberInCardInfo(){
+    public static CardInfo getInvalidCardNumberInCardInfo() {
         val invalidCardNumberInCardInfo = getValidCardInfo();
         invalidCardNumberInCardInfo.cardNumber = "0000 0000 4444 4488";
         return invalidCardNumberInCardInfo;
     }
 
-    public static CardInfo getInvalidShortCardNumberInCardInfo(){
+    public static CardInfo getInvalidShortCardNumberInCardInfo() {
         val invalidCardNumberInCardInfo = getValidCardInfo();
         invalidCardNumberInCardInfo.cardNumber = "5555 5555 5555 444";
         return invalidCardNumberInCardInfo;
     }
 
-    public static CardInfo getInvalidMonth1DigitInCardInfo(){
+    public static CardInfo getInvalidMonth1DigitInCardInfo() {
         val invalidMonthInCardInfo = getValidCardInfo();
-        invalidMonthInCardInfo.month = String.valueOf(faker.number().numberBetween(0,10));
+        invalidMonthInCardInfo.month = String.valueOf(faker.number().numberBetween(0, 10));
         return invalidMonthInCardInfo;
     }
 
-    public static CardInfo getInvalidMonth2DigitsInCardInfo(){
+    public static CardInfo getInvalidMonth2DigitsInCardInfo() {
         val invalidMonthInCardInfo = getValidCardInfo();
-        invalidMonthInCardInfo.month = String.valueOf(faker.number().numberBetween(13,100));
+        invalidMonthInCardInfo.month = String.valueOf(faker.number().numberBetween(13, 100));
         return invalidMonthInCardInfo;
     }
 
-    public static CardInfo getInvalidYear1DigitInCardInfo(){
+    public static CardInfo getInvalidYear1DigitInCardInfo() {
         val invalidYearInCardInfo = getValidCardInfo();
         invalidYearInCardInfo.year = faker.number().digits(1);
         return invalidYearInCardInfo;
     }
 
-    public static CardInfo getInvalidYear2DigitsInCardInfo(){
+    public static CardInfo getInvalidYear2DigitsInCardInfo() {
         val invalidYearInCardInfo = getValidCardInfo();
         invalidYearInCardInfo.year = LocalDate.now().minusYears(faker.number().numberBetween(1, 10))
                 .format(yearFormatter);
         return invalidYearInCardInfo;
     }
 
-    public static CardInfo getInvalidHolderInCardInfo(){
+    public static CardInfo getInvalidHolderInCardInfo() {
         val invalidHolderInCardInfo = getValidCardInfo();
         invalidHolderInCardInfo.holder = faker.internet()
                 .password(8, 20, true, true, true);
         return invalidHolderInCardInfo;
     }
 
-    public static CardInfo getInvalidCVCInCardInfo(){
+    public static CardInfo getInvalidCVCInCardInfo() {
         val invalidCVCInCardInfo = getValidCardInfo();
         invalidCVCInCardInfo.cvc_cvv = faker.number().digits(2);
         return invalidCVCInCardInfo;
