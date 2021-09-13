@@ -35,59 +35,67 @@ public class MainPage {
     private static final String expiredDateMessage = "Истёк срок действия карты";
     private final String deleteString = Keys.chord(Keys.CONTROL, "a") + Keys.DELETE;
 
-    public void buyHeadingShouldBeVisible(){
+    public void buyHeadingShouldBeVisible() {
         buyHeading.shouldBe(visible);
     }
 
-    public void buyInCreditHeadingShouldBeVisible(){
+    public void buyInCreditHeadingShouldBeVisible() {
         buyInCreditHeading.shouldBe(visible);
     }
 
-    public void approvedMessageShouldBeVisible(){
+    public void approvedMessageShouldBeVisible() {
         approvedMessage.shouldBe(visible, Duration.ofSeconds(10));
     }
 
-    public void declinedMessageShouldBeVisible(){
+    public void approvedMessageShouldBeHidden() {
+        approvedMessage.shouldBe(hidden, Duration.ofSeconds(10));
+    }
+
+    public void declinedMessageShouldBeVisible() {
         declinedMessage.shouldBe(visible, Duration.ofSeconds(10));
     }
 
-    public void errorMessagesShouldBeVisible(SelenideElement field, String text){
+    public void declinedMessageShouldBeHidden() {
+        declinedMessage.shouldBe(hidden, Duration.ofSeconds(10));
+    }
+
+    public void errorMessagesShouldBeVisible(SelenideElement field, String text) {
         field.$(".input__sub").shouldHave(exactText(text)).shouldBe(visible);
     }
 
-    public void cardNumberWrongFormatMessagesShouldBeVisible(){
+    public void cardNumberWrongFormatMessagesShouldBeVisible() {
         errorMessagesShouldBeVisible(cardNumberField, wrongFormatMessage);
     }
 
-    public void monthWrongFormatMessagesShouldBeVisible(){
+    public void monthWrongFormatMessagesShouldBeVisible() {
         errorMessagesShouldBeVisible(monthField, wrongFormatMessage);
     }
 
-    public void monthWrongDateErrorMessagesShouldBeVisible(){
+    public void monthWrongDateErrorMessagesShouldBeVisible() {
         errorMessagesShouldBeVisible(monthField, wrongDateMessage);
     }
 
-    public void yearWrongFormatMessagesShouldBeVisible(){
+    public void yearWrongFormatMessagesShouldBeVisible() {
         errorMessagesShouldBeVisible(yearField, wrongFormatMessage);
     }
 
-    public void yearExpiredMessagesShouldBeVisible(){
+    public void yearExpiredMessagesShouldBeVisible() {
         errorMessagesShouldBeVisible(yearField, expiredDateMessage);
     }
 
-    public void holderRequiredFieldMessagesShouldBeVisible(){
+    public void holderRequiredFieldMessagesShouldBeVisible() {
         errorMessagesShouldBeVisible(holderField, requiredFieldMessage);
     }
 
-    public void holderWrongFormatMessagesShouldBeVisible(){
+    public void holderWrongFormatMessagesShouldBeVisible() {
         errorMessagesShouldBeVisible(holderField, wrongFormatMessage);
     }
 
-    public void cvcWrongFormatMessagesShouldBeVisible(){
+    public void cvcWrongFormatMessagesShouldBeVisible() {
         errorMessagesShouldBeVisible(cvcField, wrongFormatMessage);
     }
 
-    public void fieldsShouldBeEmpty(){
+    public void fieldsShouldBeEmpty() {
         cardNumberInput.shouldBe(empty);
         monthInput.shouldBe(empty);
         yearInput.shouldBe(empty);
@@ -95,7 +103,7 @@ public class MainPage {
         cvcInput.shouldBe(empty);
     }
 
-    public void setCardInfoValues(DataHelper.CardInfo cardInfo){
+    public void setCardInfoValues(DataHelper.CardInfo cardInfo) {
         cardNumberInput.setValue(cardInfo.getCardNumber());
         monthInput.setValue(cardInfo.getMonth());
         yearInput.setValue(cardInfo.getYear());
@@ -103,7 +111,7 @@ public class MainPage {
         cvcInput.setValue(cardInfo.getCvc_cvv());
     }
 
-    public void deleteCardInfoValues(){
+    public void deleteCardInfoValues() {
         cardNumberInput.setValue(deleteString);
         monthInput.setValue(deleteString);
         yearInput.setValue(deleteString);
@@ -111,21 +119,21 @@ public class MainPage {
         cvcInput.setValue(deleteString);
     }
 
-    public void paymentByCard(DataHelper.CardInfo cardInfo){
+    public void paymentByCard(DataHelper.CardInfo cardInfo) {
         buyButton.click();
         buyHeadingShouldBeVisible();
         setCardInfoValues(cardInfo);
         nextButton.click();
     }
 
-    public void paymentByCredit(DataHelper.CardInfo cardInfo){
+    public void paymentByCredit(DataHelper.CardInfo cardInfo) {
         buyInCreditButton.click();
         buyInCreditHeadingShouldBeVisible();
         setCardInfoValues(cardInfo);
         nextButton.click();
     }
 
-    public void inputAndDeleteCardInfo(DataHelper.CardInfo cardInfo){
+    public void inputAndDeleteCardInfo(DataHelper.CardInfo cardInfo) {
         buyButton.click();
         buyHeadingShouldBeVisible();
         setCardInfoValues(cardInfo);
