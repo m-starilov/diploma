@@ -20,30 +20,45 @@ public class MainPageTest {
     }
 
     @Test
+    void inputValidDataForCardPayment() {
+        mainPage.paymentByCard(DataHelper.getValidCardInfo());
+        mainPage.declinedMessageShouldBeVisible();
+        mainPage.approvedMessageShouldBeHidden();
+    }
+
+    @Test
     void inputApprovedDataForCardPayment() {
         mainPage.paymentByCard(DataHelper.getApprovedCardInfo());
         mainPage.approvedMessageShouldBeVisible();
+        mainPage.declinedMessageShouldBeHidden();
         assertEquals("APPROVED", DBHelper.getPaymentStatus());
+        assertEquals(DBHelper.getPaymentId(), DBHelper.getPaymentOrderId());
     }
 
     @Test
     void inputDeclinedDataForCardPayment() {
         mainPage.paymentByCard(DataHelper.getDeclinedCardInfo());
         mainPage.declinedMessageShouldBeVisible();
+        mainPage.approvedMessageShouldBeHidden();
         assertEquals("DECLINED", DBHelper.getPaymentStatus());
+        assertEquals(DBHelper.getPaymentId(), DBHelper.getPaymentOrderId());
     }
 
     @Test
     void inputApprovedDataForCreditPayment() {
         mainPage.paymentByCredit(DataHelper.getApprovedCardInfo());
         mainPage.approvedMessageShouldBeVisible();
+        mainPage.declinedMessageShouldBeHidden();
         assertEquals("APPROVED", DBHelper.getCreditStatus());
+        assertEquals(DBHelper.getCreditId(), DBHelper.getCreditOrderId());
     }
 
     @Test
     void inputDeclinedDataForCreditPayment() {
         mainPage.paymentByCredit(DataHelper.getDeclinedCardInfo());
         mainPage.declinedMessageShouldBeVisible();
+        mainPage.approvedMessageShouldBeHidden();
         assertEquals("DECLINED", DBHelper.getCreditStatus());
+        assertEquals(DBHelper.getCreditId(), DBHelper.getCreditOrderId());
     }
 }
