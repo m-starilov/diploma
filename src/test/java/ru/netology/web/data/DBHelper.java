@@ -12,27 +12,40 @@ public class DBHelper {
     }
 
     @SneakyThrows
-    public static String getOrderStatus(String orderQuery) {
-        val paymentIdQuery = "SELECT payment_id FROM order_entity ORDER BY created DESC LIMIT 1;";
+    public static String runQuery(String column, String table) {
         val runner = new QueryRunner();
-
+        val query = "SELECT " + column + " FROM " + table + " ORDER BY created DESC LIMIT 1;";
         try (val mysqlConn = DriverManager
                 .getConnection("jdbc:mysql://localhost:3306/app", "app", "pass")) {
-            val orderId = runner.query(mysqlConn, paymentIdQuery, new ScalarHandler<String>());
-            return runner.query(mysqlConn, orderQuery, new ScalarHandler<>(), orderId);
+            return runner.query(mysqlConn, query, new ScalarHandler<>());
         } catch (Exception e) {
             val postgresqlConn = DriverManager
                     .getConnection("jdbc:postgresql://localhost:5432/app", "app", "pass");
-            val orderId = runner.query(postgresqlConn, paymentIdQuery, new ScalarHandler<String>());
-            return runner.query(postgresqlConn, orderQuery, new ScalarHandler<>(), orderId);
+            return runner.query(postgresqlConn, query, new ScalarHandler<>());
         }
     }
 
     public static String getPaymentStatus() {
-        return getOrderStatus("SELECT status FROM payment_entity WHERE transaction_id = ?;");
+        return runQuery("status", "payment_entity");
     }
 
     public static String getCreditStatus() {
-        return getOrderStatus("SELECT status FROM credit_request_entity WHERE bank_id = ?;");
+        return runQuery("status", "credit_request_entity");
+    }
+
+    public static String getPaymentId() {
+        return runQuery("transaction_id", "payment_entity");
+    }
+
+    public static String getCreditId() {
+        return runQuery("bank_id", "credit_request_entity");
+    }
+
+    public static String getPaymentOrderId() {
+        return runQuery("payment_id", "order_entity");
+    }
+
+    public static String getCreditOrderId() {
+        return runQuery("credit_id", "order_entity");
     }
 }
